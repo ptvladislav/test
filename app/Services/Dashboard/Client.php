@@ -52,7 +52,7 @@ class Client implements FinanceSystem
     }
 
     public function transfer($userId, $amount){
-        if ($this->user['balance'] >= $amount && $userId != null){
+        if ($this->user['balance'] >= $amount && $userId != null && $userId != $this->user->id){
             $this->minusBalanceUser($amount);
 
             $trn = new Transfer();
@@ -65,6 +65,8 @@ class Client implements FinanceSystem
             return ['type' => 'transfer', 'message' => 'Your transfer transaction has been success'];
         }elseif ($userId == null){
             return ['type' => 'userNotFound', 'message' => 'User not found'];
+        }elseif($userId == $this->user->id){
+            return ['type' => 'transferError', 'message' => "You don't transfer to your account"];
         }
 
         return ['type' => 'lowBalance', 'message' => 'Your balance is low. Check your balance'];
